@@ -1,11 +1,91 @@
 <html>
 <head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> 
+	<script src="lib/snap.svg.js"></script>
 
-<script>
-
-</script>
-
+	<style>
+		body
+		{
+			margin: 10;
+			padding: 0;
+		} 
+		svg
+		{
+			border-style: solid;
+			border-width: 2px;
+		}
+	</style>
 </head>
+
 <body>
+
+	<svg id="map", height="600px" width="900px"></svg>
+
+	<script defer>
+		var base=[]
+		var map=Snap('#map')
+		var g=map.group()
+		var data={'02185':'#000000'}
+
+		var countymap=Snap.load('counties.svg',function(countymap) {
+			g.append(countymap)
+			map.append(g)
+			addHandlerToMap()
+			addzoomHandler(g)
+			g.drag()
+			g.transform('s1.6 1.6t105 70')
+
+			for (var key in data) {
+				string='path[id="'+key+'"]'
+				g.select(string).attr({fill:"#bada55"})
+			}
+		})
+
+		function addHandlerToMap() {
+			map.hover(function(ev) {getEventElement(ev)}, function(ev) {getEventElementun(ev)})
+		}
+
+		function addzoomHandler(countymap) {
+			map.click(function(ev) {getEventElementzoom(ev,countymap)})
+		}
+
+		function getEventElementzoom(ev,countymap) {
+			if(ev.target.id=='State_Lines') {return;};
+			var snapEl=Snap(ev.target)
+			zoomEl(snapEl,countymap)
+		}
+
+		function zoomEl(el,countymap) {
+			coords=el.getBBox(1)
+			scale=3
+			x=(300-((coords.x2+coords.x)/2))*scale
+			y=(200-((coords.y2+coords.y)/2))*scale
+			tstring='t'+x+' '+y+' s'+scale+' '+scale
+			g.animate({'transform':tstring},500,mina.backin)
+		}
+
+		function getEventElement(ev) {
+			if(ev.target.localName=='svg') {return;};
+			if(ev.target.id=='State_Lines') {return;};
+			var snapEl=Snap(ev.target)
+			highlightEl(snapEl)
+		}
+
+		function getEventElementun(ev) {
+			if(ev.target.localName=='svg') {return;};
+			if(ev.target.id=='State_Lines') {return;};
+			var snapEl=Snap(ev.target)
+			unhighlightEl(snapEl)
+		}
+
+		function highlightEl(el) {
+			el.attr({'stroke-width':1.5,'stroke':'#f0b320'})
+		}
+
+		function unhighlightEl(el) {
+			el.attr({'stroke-width':.1,'stroke':'#000000'})
+		}
+	</script>
+
 </body>
 </html>
