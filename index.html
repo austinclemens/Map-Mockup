@@ -143,7 +143,7 @@
 		function zoom_out() {
 			formerscale=currentscale
 			currentscale=currentscale/2
-			if (currentscale<1) {currentscale=1}
+			if (currentscale<1.6) {currentscale=1.6}
 			s_string='s'+currentscale+' '+currentscale
 
 			c_coords=g.getBBox()
